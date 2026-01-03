@@ -38,10 +38,6 @@ public class FretAnswer {
     }
     int currentNoteIndex = this.allNotes.indexOf(currentNote);
 
-    System.out.println(String.format("noteIsFlat: %b", noteIsFlat));
-    System.out.println(String.format("currentNote: %s", currentNote));
-    System.out.println(String.format("this.note: %s", this.note));
-
     while (!currentNote.equals(this.note)) {
       // go up a fret
       correctFret++;
@@ -69,8 +65,6 @@ public class FretAnswer {
       correctFret += 12;
     }
 
-    System.out.println(String.format("correctFret: %d", correctFret));
-
     return fret == correctFret;
   }
 
@@ -78,8 +72,20 @@ public class FretAnswer {
     return octave;
   }
 
+  public void setOctave(String octave) {
+    this.octave = octave;
+
+    this.isCorrectFret = checkFret(this.fret);
+  }
+
   public String getNote() {
     return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
+
+    this.isCorrectFret = checkFret(this.fret);
   }
 
   public String getString() {

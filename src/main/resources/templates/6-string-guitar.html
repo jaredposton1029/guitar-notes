@@ -7,7 +7,15 @@
 </head>
 
 <body>
-  <p th:text="|Strings are ${strings.toString()}!|" />
+  <form action="#" th:action="@{/6-string-guitar}" th:object="${fretAnswer}" method="post">
+    <label for="fret" th:text="|What fret is a ${randomOctave} ${randomNote} on the ${randomString} string?|" />
+    <input type="number" name="fret" id="fret" min="0" max="23" required th:field="*{fret}" />
+    <input type="hidden" name="octave" th:field="*{octave}" />
+    <input type="hidden" name="string" th:field="*{string}" />
+    <input type="hidden" name="note" th:field="*{note}" />
+    <input type="hidden" name="allNotes" th:field="*{allNotes}" />
+    <button type="submit">Submit!</button>
+  </form>
 </body>
 
 </html>

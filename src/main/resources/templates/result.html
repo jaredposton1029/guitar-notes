@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+  <title>Getting Started: Handling Form Submission</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+  <h1>Result</h1>
+  <p th:text="'fret: ' + ${fretAnswer.fret}" />
+  <p th:text="'octave: ' + ${fretAnswer.octave}" />
+  <p th:text="'note: ' + ${fretAnswer.note}" />
+  <p th:text="'string: ' + ${fretAnswer.string}" />
+  <p th:text="'allNotes: ' + ${fretAnswer.allNotes}" />
+  <p th:text="'isCorrectFret: ' + ${fretAnswer.isCorrectFret}" />
+</body>
+
+</html>

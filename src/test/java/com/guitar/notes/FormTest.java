@@ -24,673 +24,686 @@ public class FormTest {
 
   private static final List<String> ALL_NOTES = WebController.allNotes();
 
-  private static void testForm(MockMvc mvc, String postUri, FretAnswer fretAnswer, int userSubmittedFret)
+  private static void testForm(MockMvc mvc, String postUri, FretAnswer fretAnswer, int maxFret, int correctFret)
       throws Exception {
     String allNotesString = String.valueOf(fretAnswer.getAllNotes());
     allNotesString = allNotesString.replaceAll(", ", ",");
     allNotesString = allNotesString.substring(1, allNotesString.length() - 1);
 
-    mvc.perform(post(postUri)
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .param("fret", String.valueOf(userSubmittedFret))
-        .param("octave", fretAnswer.getOctave())
-        .param("string", fretAnswer.getString())
-        .param("allNotes", allNotesString)
-        .param("note", fretAnswer.getNote()))
-        .andExpect(status().isOk())
-        .andExpect(view().name("result"))
-        .andExpect(model().attributeExists("randomOctave"))
-        .andExpect(model().attributeExists("randomNote"))
-        .andExpect(model().attributeExists("allNotes"))
-        .andExpect(model().attributeExists("fretAnswer"))
-        .andExpect(model().attribute("fretAnswer", hasProperty("isCorrectFret", is(true))));
+    for (int i = 0; i <= maxFret; i++) {
+      boolean answer = false;
+      if (i == correctFret) {
+        answer = true;
+      }
+      mvc.perform(post(postUri)
+          .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+          .param("fret", String.valueOf(i))
+          .param("octave", fretAnswer.getOctave())
+          .param("string", fretAnswer.getString())
+          .param("allNotes", allNotesString)
+          .param("note", fretAnswer.getNote().toString()))
+          .andExpect(status().isOk())
+          .andExpect(view().name("result"))
+          .andExpect(model().attributeExists("randomOctave"))
+          .andExpect(model().attributeExists("randomNote"))
+          .andExpect(model().attributeExists("allNotes"))
+          .andExpect(model().attributeExists("fretAnswer"))
+          .andExpect(model().attribute("fretAnswer", hasProperty("isCorrectFret", is(answer))));
+
+    }
   }
 
   @Test
   public void test6StringGuitarLowEString(@Autowired MockMvc mvc) throws Exception {
     final String uri = "/6-string-guitar";
     final String string = "low E";
+    final int maxFret = 23;
     FretAnswer answer = new FretAnswer("low", "E", string, ALL_NOTES);
-    testForm(mvc, uri, answer, 0);
+    testForm(mvc, uri, answer, maxFret, 0);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 3);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 3);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 5);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 5);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 7);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 7);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 10);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 10);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("E");
+    answer.setNoteString("E");
     answer.setOctave("high");
-    testForm(mvc, uri, answer, 12);
+    testForm(mvc, uri, answer, maxFret, 12);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 15);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 15);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 17);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 17);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 19);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 19);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 22);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 22);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 23);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 23);
   }
 
   @Test
   public void test6StringGuitarAString(@Autowired MockMvc mvc) throws Exception {
     final String uri = "/6-string-guitar";
     final String string = "A";
+    final int maxFret = 23;
     FretAnswer answer = new FretAnswer("low", "A", string, ALL_NOTES);
-    testForm(mvc, uri, answer, 0);
+    testForm(mvc, uri, answer, maxFret, 0);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 3);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 3);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 5);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 5);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 7);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 7);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 10);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 10);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("A");
+    answer.setNoteString("A");
     answer.setOctave("high");
-    testForm(mvc, uri, answer, 12);
+    testForm(mvc, uri, answer, maxFret, 12);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 15);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 15);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 17);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 17);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 19);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 19);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 22);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 22);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 23);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 23);
   }
 
   @Test
   public void test6StringGuitarDString(@Autowired MockMvc mvc) throws Exception {
     final String uri = "/6-string-guitar";
     final String string = "D";
+    final int maxFret = 23;
     FretAnswer answer = new FretAnswer("low", "D", string, ALL_NOTES);
-    testForm(mvc, uri, answer, 0);
+    testForm(mvc, uri, answer, maxFret, 0);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 3);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 3);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 5);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 5);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 7);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 7);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 10);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 10);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("D");
+    answer.setNoteString("D");
     answer.setOctave("high");
-    testForm(mvc, uri, answer, 12);
+    testForm(mvc, uri, answer, maxFret, 12);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 15);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 15);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 17);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 17);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 19);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 19);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 22);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 22);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 23);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 23);
   }
 
   @Test
   public void test6StringGuitarGString(@Autowired MockMvc mvc) throws Exception {
     final String uri = "/6-string-guitar";
     final String string = "G";
+    final int maxFret = 23;
     FretAnswer answer = new FretAnswer("low", "G", string, ALL_NOTES);
-    testForm(mvc, uri, answer, 0);
+    testForm(mvc, uri, answer, maxFret, 0);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 3);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 3);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 3);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 3);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 5);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 5);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 7);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 7);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 10);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 10);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("G");
+    answer.setNoteString("G");
     answer.setOctave("high");
-    testForm(mvc, uri, answer, 12);
+    testForm(mvc, uri, answer, maxFret, 12);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 15);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 15);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 15);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 15);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 17);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 17);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 19);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 19);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 22);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 22);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 23);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 23);
   }
 
   @Test
   public void test6StringGuitarBString(@Autowired MockMvc mvc) throws Exception {
     final String uri = "/6-string-guitar";
     final String string = "B";
+    final int maxFret = 23;
     FretAnswer answer = new FretAnswer("low", "B", string, ALL_NOTES);
-    testForm(mvc, uri, answer, 0);
+    testForm(mvc, uri, answer, maxFret, 0);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 3);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 3);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 5);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 5);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 7);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 7);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 7);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 7);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 10);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 10);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("B");
+    answer.setNoteString("B");
     answer.setOctave("high");
-    testForm(mvc, uri, answer, 12);
+    testForm(mvc, uri, answer, maxFret, 12);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 15);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 15);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("E");
-    testForm(mvc, uri, answer, 17);
+    answer.setNoteString("E");
+    testForm(mvc, uri, answer, maxFret, 17);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 19);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 19);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 19);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 19);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 22);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 22);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 23);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 23);
   }
 
   @Test
   public void test6StringGuitarHighEString(@Autowired MockMvc mvc) throws Exception {
     final String uri = "/6-string-guitar";
     final String string = "high E";
+    final int maxFret = 23;
     FretAnswer answer = new FretAnswer("low", "E", string, ALL_NOTES);
-    testForm(mvc, uri, answer, 0);
+    testForm(mvc, uri, answer, maxFret, 0);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 1);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 1);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 2);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 2);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 3);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 3);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 4);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 4);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 5);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 5);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 6);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 6);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 7);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 7);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 8);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 8);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 9);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 9);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 10);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 10);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 11);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 11);
 
-    answer.setNote("E");
+    answer.setNoteString("E");
     answer.setOctave("high");
-    testForm(mvc, uri, answer, 12);
+    testForm(mvc, uri, answer, maxFret, 12);
 
-    answer.setNote("F");
-    testForm(mvc, uri, answer, 13);
+    answer.setNoteString("F");
+    testForm(mvc, uri, answer, maxFret, 13);
 
-    answer.setNote("F#");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("F#");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("Gb");
-    testForm(mvc, uri, answer, 14);
+    answer.setNoteString("Gb");
+    testForm(mvc, uri, answer, maxFret, 14);
 
-    answer.setNote("G");
-    testForm(mvc, uri, answer, 15);
+    answer.setNoteString("G");
+    testForm(mvc, uri, answer, maxFret, 15);
 
-    answer.setNote("G#");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("G#");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("Ab");
-    testForm(mvc, uri, answer, 16);
+    answer.setNoteString("Ab");
+    testForm(mvc, uri, answer, maxFret, 16);
 
-    answer.setNote("A");
-    testForm(mvc, uri, answer, 17);
+    answer.setNoteString("A");
+    testForm(mvc, uri, answer, maxFret, 17);
 
-    answer.setNote("A#");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("A#");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("Bb");
-    testForm(mvc, uri, answer, 18);
+    answer.setNoteString("Bb");
+    testForm(mvc, uri, answer, maxFret, 18);
 
-    answer.setNote("B");
-    testForm(mvc, uri, answer, 19);
+    answer.setNoteString("B");
+    testForm(mvc, uri, answer, maxFret, 19);
 
-    answer.setNote("C");
-    testForm(mvc, uri, answer, 20);
+    answer.setNoteString("C");
+    testForm(mvc, uri, answer, maxFret, 20);
 
-    answer.setNote("C#");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("C#");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("Db");
-    testForm(mvc, uri, answer, 21);
+    answer.setNoteString("Db");
+    testForm(mvc, uri, answer, maxFret, 21);
 
-    answer.setNote("D");
-    testForm(mvc, uri, answer, 22);
+    answer.setNoteString("D");
+    testForm(mvc, uri, answer, maxFret, 22);
 
-    answer.setNote("D#");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("D#");
+    testForm(mvc, uri, answer, maxFret, 23);
 
-    answer.setNote("Eb");
-    testForm(mvc, uri, answer, 23);
+    answer.setNoteString("Eb");
+    testForm(mvc, uri, answer, maxFret, 23);
   }
 }

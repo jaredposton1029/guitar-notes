@@ -8,12 +8,21 @@
 
 <body>
   <h1>Result</h1>
-  <p th:text="'fret: ' + ${fretAnswer.fret}" />
-  <p th:text="'octave: ' + ${fretAnswer.octave}" />
-  <p th:text="'note: ' + ${fretAnswer.note}" />
-  <p th:text="'string: ' + ${fretAnswer.string}" />
-  <p th:text="'allNotes: ' + ${fretAnswer.allNotes}" />
-  <p th:text="'isCorrectFret: ' + ${fretAnswer.isCorrectFret}" />
+  <p th:if="${fretAnswer.isCorrectFret}">
+    You're correct! Guess again <a autofocus href="/6-string-guitar">here</a>
+  </p>
+  <div th:unless="${fretAnswer.isCorrectFret}">
+    <p>WRONG! GUESS AGAIN</p>
+    <form action="#" th:action="@{/6-string-guitar}" th:object="${fretAnswer}" method="post">
+      <label for="fret" th:text="|What fret is a *{octave} *{note} on the *{string} string?|" />
+      <input type="number" name="fret" id="fret" min="0" max="23" required th:field="*{fret}" />
+      <input type="hidden" name="octave" th:field="*{octave}" />
+      <input type="hidden" name="string" th:field="*{string}" />
+      <input type="hidden" name="note" th:field="*{note}" />
+      <input type="hidden" name="allNotes" th:field="*{allNotes}" />
+      <button type="submit">Submit!</button>
+    </form>
+  </div>
 </body>
 
 </html>

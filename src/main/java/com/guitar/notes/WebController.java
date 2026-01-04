@@ -1,5 +1,6 @@
 package com.guitar.notes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,8 +31,27 @@ public class WebController {
 
     String octave = (String) model.getAttribute("randomOctave");
     String note = (String) model.getAttribute("randomNote");
-    List<String> allNotes = (List<String>) model.getAttribute("allNotes");
-    model.addAttribute("fretAnswer", new FretAnswer(octave, note, randomString, allNotes));
+
+    Object allNotesObj = model.getAttribute("allNotes");
+    List<String> allNotes = new ArrayList<String>();
+    if (allNotesObj instanceof List) {
+      List<?> rawList = (List<?>) allNotesObj;
+      for (Object item : rawList) {
+        if (item instanceof String) {
+          allNotes.add((String) item);
+        } else {
+          System.err.println(String.format("Found non-String element: %s", item.getClass().getName()));
+        }
+      }
+    }
+
+    FretAnswer fretAnswer = null;
+    try {
+      fretAnswer = new FretAnswer(octave, note, randomString, allNotes);
+    } catch (InvalidNoteException e) {
+      System.err.println(String.format("Error trying to create fret answer: %s", e.getMessage()));
+    }
+    model.addAttribute("fretAnswer", fretAnswer);
 
     return "6-string-guitar";
   }
@@ -39,7 +59,6 @@ public class WebController {
   @PostMapping("/6-string-guitar")
   public String fretSubmit(@ModelAttribute FretAnswer fretAnswer, Model model) {
     model.addAttribute("fretAnswer", fretAnswer);
-    System.out.println("User entered: " + fretAnswer.getFret());
     return "result";
   }
 

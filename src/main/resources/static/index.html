@@ -4,14 +4,26 @@
 <head>
   <title>Getting Started: Serving Web Content</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script>
+    function goToPage() {
+      const select = document.getElementById("guitar-choice");
+      const selectedValue = select.value;
+
+      if (selectedValue) {
+        window.location.href = selectedValue;
+      } else {
+        alert("Please select an option.");
+      }
+    }
+  </script>
 </head>
 
 <body>
-  <p>Get your greeting <a href="/greeting">here</a></p>
-  <label for="guitar">Pick your guitar:</label>
-  <select name="guitar" id="guitar">
-    <option value="6-string-guitar">6-string Guitar</option>
+  <label for="guitar-choice">Pick your guitar:</label>
+  <select name="guitar-choice" id="guitar-choice">
+    <option value="/6-string-guitar">6-string Guitar</option>
   </select>
+  <button type="button" onclick="goToPage()">Go</button>
 </body>
 
 </html>

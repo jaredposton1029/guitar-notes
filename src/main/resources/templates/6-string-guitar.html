@@ -4,6 +4,11 @@
 <head>
   <title>Getting Started: Serving Web Content</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script>
+    function goBackToIndex() {
+      window.location.href = "/index.html";
+    }
+  </script>
 </head>
 
 <body>
@@ -16,6 +21,8 @@
     <input type="hidden" name="allNotes" th:field="*{allNotes}" />
     <button type="submit">Submit!</button>
   </form>
+
+  <button type="button" onclick="goBackToIndex()">Go Back</button>
 </body>
 
 </html>

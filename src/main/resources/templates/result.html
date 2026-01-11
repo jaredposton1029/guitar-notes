@@ -9,7 +9,8 @@
 <body>
   <h1>Result</h1>
   <p th:if="${fretAnswer.isCorrectFret}">
-    You're correct! Guess again <a autofocus href="/6-string-guitar">here</a>
+    You're correct!
+    <button autofocus type="button" onclick="window.location.href = '/6-string-guitar'">Guess again!</button>
   </p>
   <div th:unless="${fretAnswer.isCorrectFret}">
     <p>WRONG! GUESS AGAIN</p>

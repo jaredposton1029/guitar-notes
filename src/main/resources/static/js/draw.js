@@ -7,6 +7,9 @@ function drawCircle(canvas, center_point, radius) {
   }
 
   const ctx = canvas.getContext("2d");
+  if (!(ctx)) {
+    return
+  }
 
   ctx.beginPath();
 
@@ -21,33 +24,36 @@ function drawTrebleClef(canvas, line_spacing) {
   }
 
   const ctx = canvas.getContext("2d");
+  if (!(ctx)) {
+    return
+  }
   const CANVAS_HEIGHT = canvas.height;
   const CANVAS_WIDTH = canvas.width;
 
   ctx.beginPath();
 
   let point1 = {
-    x: 0.2 * CANVAS_WIDTH,
+    x: 0.2 * CANVAS_WIDTH + 0.75 * line_spacing,
     y: 0.5 * CANVAS_HEIGHT + 1.5 * line_spacing
   };
   let point2 = {
-    x: point1.x - 0.75 * line_spacing,
-    y: point1.y
+    x: point1.x - 1.5 * line_spacing,
+    y: point1.y + 0.25 * line_spacing
   };
   let point3 = {
     x: point2.x,
-    y: 0.5 * CANVAS_HEIGHT
+    y: 0.5 * CANVAS_HEIGHT + 0.25 * line_spacing
   };
   let point4 = {
-    x: point3.x + 0.75 * line_spacing,
-    y: point3.y
+    x: point3.x + line_spacing,
+    y: 0.5 * CANVAS_HEIGHT
   };
   ctx.moveTo(point1.x, point1.y);
   ctx.bezierCurveTo(point2.x, point2.y, point3.x, point3.y, point4.x, point4.y);
 
   point1 = point4;
   point2 = {
-    x: point1.x + 2 * line_spacing,
+    x: point1.x + 1.5 * line_spacing,
     y: point1.y
   };
   point3 = {
@@ -55,7 +61,7 @@ function drawTrebleClef(canvas, line_spacing) {
     y: 0.5 * CANVAS_HEIGHT + 2 * line_spacing
   };
   point4 = {
-    x: point3.x - 2 * line_spacing,
+    x: point3.x - 1.75 * line_spacing,
     y: point3.y
   };
   ctx.moveTo(point1.x, point1.y);
@@ -63,12 +69,12 @@ function drawTrebleClef(canvas, line_spacing) {
 
   point1 = point4;
   point2 = {
-    x: point1.x - 4 * line_spacing,
-    y: 0.5 * CANVAS_HEIGHT + 0.5 * line_spacing
+    x: point1.x - 3.25 * line_spacing,
+    y: 0.5 * CANVAS_HEIGHT + 0.25 * line_spacing
   };
   point3 = {
-    x: point1.x + 4 * line_spacing,
-    y: 0.5 * CANVAS_HEIGHT - 2 * line_spacing
+    x: point1.x + 3 * line_spacing,
+    y: 0.5 * CANVAS_HEIGHT - 1.5 * line_spacing
   };
   point4 = {
     x: point1.x + 0.5 * line_spacing,
@@ -109,6 +115,9 @@ function drawBassClef(canvas, line_spacing) {
   }
 
   const ctx = canvas.getContext("2d");
+  if (!(ctx)) {
+    return
+  }
   const CANVAS_HEIGHT = canvas.height;
   const CANVAS_WIDTH = canvas.width;
 
@@ -166,6 +175,51 @@ function drawBassClef(canvas, line_spacing) {
   drawCircle(canvas, circle_point, radius);
 }
 
+function drawNote(canvas, line_spacing) {
+  if (!(canvas instanceof HTMLCanvasElement) || !(typeof line_spacing === "number")) {
+    return
+  }
+
+  const ctx = canvas.getContext("2d");
+  if (!(ctx)) {
+    return
+  }
+  const CANVAS_HEIGHT = canvas.height;
+  const CANVAS_WIDTH = canvas.width;
+
+  const note_ellipse = {
+    x: CANVAS_WIDTH / 2,
+    y: 0.5 * CANVAS_HEIGHT + line_spacing,
+    rx: 0.5 * line_spacing,
+    ry: 0.35 * line_spacing,
+    rotation: -Math.PI / 6,
+  }
+  ctx.beginPath();
+
+  // note head
+  ctx.ellipse(
+    note_ellipse.x,
+    note_ellipse.y,
+    note_ellipse.rx,
+    note_ellipse.ry,
+    note_ellipse.rotation,
+    0,
+    2 * Math.PI
+  );
+  ctx.fill();
+
+  // note stem
+  const note_stem = {
+    x: note_ellipse.x + note_ellipse.rx * Math.cos(note_ellipse.rotation) + 1,
+    y: note_ellipse.y + note_ellipse.ry * Math.sin(note_ellipse.rotation) + 1,
+    height: 4.25 * line_spacing
+  }
+  ctx.moveTo(note_stem.x, note_stem.y);
+  ctx.lineTo(note_stem.x, note_stem.y - note_stem.height);
+
+  ctx.stroke();
+}
+
 function draw() {
   const canvas = document.getElementById("noteCanvas");
 
@@ -194,6 +248,9 @@ function draw() {
   // draw clef
   drawTrebleClef(canvas, LINE_SPACING);
   // drawBassClef(canvas, LINE_SPACING);
+
+  // draw note
+  drawNote(canvas, LINE_SPACING);
 }
 
 draw();
